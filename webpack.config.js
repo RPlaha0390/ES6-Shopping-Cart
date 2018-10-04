@@ -44,6 +44,7 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('[name].css'),
     new CopyWebpackPlugin([
+      {from: '../src/data', to: 'data'},
       {from: '../src/images', to: 'images'},
       {from: './*.html'}
     ])

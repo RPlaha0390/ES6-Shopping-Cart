@@ -1,5 +1,17 @@
-.header {
+.container__header {
 	height: 70px;
 	width: 100%;
-	background: black;
+	background: $color-palette-1;
+	border-bottom: 5px solid $color-palette-2;
+
+	.header {
+		margin: 0 auto;
+		width: 90%;
+		color: $color-white;
+		font-size: 24px;
+	}
+
+	.header__title {
+		padding: 20px;
+	}
 }

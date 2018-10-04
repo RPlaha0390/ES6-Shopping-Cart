@@ -15,7 +15,7 @@ export default class Products {
    * attachEventHandlers
    */
   attachEventHandlers () {
-    const productContainer = document.querySelectorAll('.product');
+    const productItems = document.querySelectorAll('.product__item');
     const emptyCartButton = document.querySelector('.cart__empty');
 
     const attachEvent = (productId, button) => {
@@ -24,9 +24,9 @@ export default class Products {
 
     emptyCartButton.addEventListener('click', this.clearCartContents.bind(this));
 
-    productContainer.forEach(product => {
-      const productId = product.firstElementChild.getAttribute('data-id');
-      const button = product.querySelectorAll('.button--add')[0];
+    productItems.forEach(product => {
+      const productId = product.getAttribute('data-id');
+      const button = product.querySelectorAll('.product__button-add-to-cart')[0];
 
       attachEvent(productId, button);
     });
@@ -52,7 +52,7 @@ export default class Products {
    * @param  {Array} products
    */
   displayProductsOnPage () {
-    const containerDiv = document.querySelectorAll('.products')[0];
+    const containerDiv = document.querySelectorAll('.product')[0];
     let allProductsHtml = '';
 
     this.products.forEach(product => {
@@ -90,6 +90,7 @@ export default class Products {
 
     emptyCartButton.style.display = 'block';
     checkoutCartButton.style.display = 'block';
+    cartTotalContainer.style.display = 'block';
     cartTotalContainer.innerHTML = `£${this.calculateTotalPrice()}`
   }
 
@@ -125,9 +126,14 @@ export default class Products {
   clearCartContents () {
     const cartItemsContainer = document.querySelector('.cart__items');
     const cartTotalContainer = document.querySelector('.cart__total');
+    const checkoutCartButton = document.querySelector('.cart__checkout');
+    const emptyCartButton = document.querySelector('.cart__empty');
 
     cartItemsContainer.innerHTML = '';
     cartTotalContainer.innerHTML = '';
+    checkoutCartButton.style.display = 'none';
+    emptyCartButton.style.display = 'none';
+    cartTotalContainer.style.display = 'none';
 
     this.cart = [];
   }
@@ -146,16 +152,12 @@ export default class Products {
    */
   createProductHtmlString (product) {
     return `
-      <div class="product">
-        <div data-id="${product.id}" class="product__item">
-          <div class="product__image">
-            <img src="${product.images[0].src}" />
-          </div>
-          <div class="product__text">${product.title}</div>
-          <div class="product__buttons">
-            <button class="button button--add" data-action="add">add to cart</button>
-            <button class="button button--view">quick view</button>
-          </div>
+      <div class="product__item" data-id="${product.id}">
+        <div class="product__image" style="background-image: url('${product.images[0].src}');">
+        </div>
+        <div class="product__text">${product.title}</div>
+        <div class="product__button-container">
+          <button class="button product__button-add-to-cart" data-action="add">add to cart</button>
         </div>
       </div>
     `;
@@ -169,9 +171,9 @@ export default class Products {
   createCartHtmlString (product) {
     return `
       <li class="cart__item" data-id="${product.product.id}">
-        <p>${product.product.title}</p>
-        <p>${product.product.variants[0].price * product.quantity}</p>
-        <p>${product.quantity}</p>
+        <p class="cart__item-name">${product.product.title}</p>
+        <p class="cart__item-quantity">x ${product.quantity}</p>
+        <p class="cart__item-price">£${product.product.variants[0].price * product.quantity}</p>
       </li>
     `;
   }
@@ -180,7 +182,7 @@ export default class Products {
    * getAndDisplayProductsOnPage
    */
   getAndDisplayProductsOnPage () {
-    Utils.getData('https://j-parre.myshopify.com/products.json')
+    Utils.getData('../data/products.json')
       .then(response => this.products = response.products)
       .then(() => this.displayProductsOnPage())
       .then(() => this.attachEventHandlers())
