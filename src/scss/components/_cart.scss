@@ -1,0 +1,17 @@
+.cart {
+  background: #fff;
+  width: 25%;
+  position: absolute;
+  top: 70px;
+  right: 0;
+
+	.cart__header {
+		border-bottom: 1px solid #efefef;
+		padding: 10px;
+	}
+
+	.cart__empty,
+	.cart__checkout {
+		display: none;
+	}
+}

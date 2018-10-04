@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Product App</title>
+  <link rel="stylesheet" href="dist/bundle.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="container__header">
+      <div class="header">
+        <div class="header__left"></div>
+        <div class="header__right">
+          <div class="basket">
+            <div class="basket__count"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container__content">
+      <div class="content">
+        <div class="products"></div>
+        <div class="cart">
+          <div class="cart__header">
+            <h2>Cart</h2>
+            <span class="cart__count"></span>
+          </div>
+          <ul class="cart__items"></ul>
+          <div class="cart__buttons">
+            <a class="button cart__empty" href="javascript:void(0)">Empty</a>
+            <a class="button cart__checkout" href="javascript:void(0)">Checkout</a>
+          </div>
+          <div class="cart__total">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="dist/bundle.js"></script>
+</body>
+
+</html>
