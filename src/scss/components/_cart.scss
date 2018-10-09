@@ -10,7 +10,23 @@
 		padding: 15px 10px;
 		background: $color-palette-1;
 		color: $color-white;
+		float: left;
+    width: 100%;
 
+		h2 {
+			float: left; 
+		}
+		.cart__count {
+			float: right;
+	    border: 2px solid white;
+	    width: 40px;
+	    text-align: center;
+	    padding: 10px;
+	    border-radius: 20px;
+	    background: white;
+	    color: $color-palette-1;
+	    display: none;
+		}
 	}
 
 	.cart__items {

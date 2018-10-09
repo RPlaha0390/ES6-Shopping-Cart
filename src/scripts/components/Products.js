@@ -6,9 +6,10 @@ export default class Products {
    */
   constructor() {
     this.cart = [];
-    this.itemCounter = 0;
+    this.itemCounter = 1;
 
     this.addProductToCart = this.addProductToCart.bind(this);
+    this.removeProductFromCart = this.removeProductFromCart.bind(this);
   }
 
   /**
@@ -17,6 +18,7 @@ export default class Products {
   attachEventHandlers () {
     const productItems = document.querySelectorAll('.product__item');
     const emptyCartButton = document.querySelector('.cart__empty');
+
 
     const attachEvent = (productId, button) => {
       button.addEventListener('click', () => this.addProductToCart(parseInt(productId)), false);
@@ -35,15 +37,16 @@ export default class Products {
   attachCartEventHandlers () {
     const cartItemContainer = document.querySelectorAll('.cart__item');
 
-    const attachEvent = (productId, button) => {
-      button.addEventListener('click', () => this.removeProductFromCart(productId), false);
+    const attachEvent = (productId, button, quantity) => {
+      button.addEventListener('click', () => this.removeProductFromCart(productId, quantity), false);
     }
 
     cartItemContainer.forEach(product => {
       const productId = product.getAttribute('data-id');
-      const button = product.querySelectorAll('.button--remove')[0];
+      const button = product.querySelectorAll('.cart__item-remove')[0];
+      const productQuantity = product.querySelectorAll('.cart__item-quantity')[0].innerHTML;
 
-      attachEvent(productId, button);
+      attachEvent(productId, button, productQuantity);
     })
   }
 
@@ -77,7 +80,9 @@ export default class Products {
     })
 
     cart.innerHTML = cartHtml;
+
     this.showCartButtons();
+    this.attachCartEventHandlers();
   }
 
   /**
@@ -113,8 +118,21 @@ export default class Products {
         }
       })
     }
-
     this.updateCartView();
+    this.incrementCartCount();
+  }
+
+  incrementCartCount () {
+    const cartCountContainer = document.querySelector('.cart__count');
+    cartCountContainer.style.display = 'block';
+    cartCountContainer.innerHTML = this.itemCounter++;
+  }
+
+  decrementCartCount (productQuantity) {
+    const cartCountContainer = document.querySelector('.cart__count');
+
+    this.itemCounter = this.itemCounter - productQuantity;
+    cartCountContainer.innerHTML = this.itemCounter - 1;
   }
 
   productFound (productId) {
@@ -126,6 +144,7 @@ export default class Products {
   clearCartContents () {
     const cartItemsContainer = document.querySelector('.cart__items');
     const cartTotalContainer = document.querySelector('.cart__total');
+    const cartCountContainer = document.querySelector('.cart__count');
     const checkoutCartButton = document.querySelector('.cart__checkout');
     const emptyCartButton = document.querySelector('.cart__empty');
 
@@ -134,7 +153,11 @@ export default class Products {
     checkoutCartButton.style.display = 'none';
     emptyCartButton.style.display = 'none';
     cartTotalContainer.style.display = 'none';
+    cartCountContainer.style.display = 'none';
 
+
+    // reset cart and counter
+    this.itemCounter = 1;
     this.cart = [];
   }
 
@@ -142,6 +165,21 @@ export default class Products {
     return this.cart.reduce((total, item) => {
       return total + (item.product.variants[0].price * item.quantity);
     }, 0);
+  }
+
+  removeProductFromCart (productId, quantity) {
+    let productQuantity;
+    productQuantity = parseInt(quantity);
+
+    this.cart = this.cart.filter(cartItem => cartItem.product.id !== parseInt(productId));
+
+
+    if (this.cart.length == 0) {
+      this.clearCartContents();
+    } else {
+      this.decrementCartCount(productQuantity);
+      this.updateCartView();
+    }
   }
 
 
@@ -172,8 +210,9 @@ export default class Products {
     return `
       <li class="cart__item" data-id="${product.product.id}">
         <p class="cart__item-name">${product.product.title}</p>
-        <p class="cart__item-quantity">x ${product.quantity}</p>
+        <p class="cart__item-quantity">${product.quantity}</p>
         <p class="cart__item-price">£${product.product.variants[0].price * product.quantity}</p>
+        <a href="javascript:void(0)"class="cart__item-remove">Remove</a>
       </li>
     `;
   }
